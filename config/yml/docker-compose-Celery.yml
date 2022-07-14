@@ -1,0 +1,123 @@
+version: '3'
+services:
+    redis:
+        image: 'redis:5.0.5'
+        # command: redis-server --requirepass redispass
+
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        # Uncomment these lines to persist data on the local filesystem.
+        #     - PGDATA=/var/lib/postgresql/data/pgdata
+        # volumes:
+        #     - ./pgdata:/var/lib/postgresql/data/pgdata
+
+    webserver:
+        image: jessewei/sqlg-airflow:latest
+        restart: always
+        container_name: air_webserver_1        
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            - LOAD_EX=n
+            - FERNET_KEY=xfaECYb20a2PzNTcIYXFXztTlaEVD43KwUoXeer_83k=
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+            - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql+psycopg2://airflow:airflow@postgres:5432/airflow            
+            - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+            - EXECUTOR=Celery
+            - AIRFLOW__WEBSERVER__RBAC=True   
+            # - POSTGRES_USER=airflow
+            # - POSTGRES_PASSWORD=airflow
+            # - POSTGRES_DB=airflow
+            # - REDIS_PASSWORD=redispass
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"              
+        volumes:
+          - ./config/var.json:/usr/local/airflow/var.json          
+          - ./config/conn.json:/usr/local/airflow/conn.json          
+          - ./etl_home/etl_base:/usr/local/airflow/etl_base
+          - ./etl_home/etl_base/dags:/usr/local/airflow/dags
+          - ./etl_home/etl_base/sql:/usr/local/airflow/sql
+          - ./etl_home/bin:/usr/local/airflow/bin
+          - ./etl_home/logs:/usr/local/airflow/logs
+          - ./etl_home/etl_base/requirements.txt:/requirements.txt
+        ports:
+            - "8081:8080"
+        command: webserver
+        #healthcheck:
+        #    test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+        #    interval: 30s
+        #    timeout: 30s
+        #    retries: 3
+
+    flower:
+        image: jessewei/sqlg-airflow:latest
+        restart: always
+        depends_on:
+            - redis
+        environment:
+            - EXECUTOR=Celery
+            # - REDIS_PASSWORD=redispass
+        ports:
+            - "5555:5555"
+        command: flower
+
+    scheduler:
+        image: jessewei/sqlg-airflow:latest
+        restart: always
+        depends_on:
+            - webserver
+        volumes:
+          - ./config/var.json:/usr/local/airflow/var.json          
+          - ./config/conn.json:/usr/local/airflow/conn.json          
+          - ./etl_home/etl_base:/usr/local/airflow/etl_base
+          - ./etl_home/etl_base/dags:/usr/local/airflow/dags
+          - ./etl_home/etl_base/sql:/usr/local/airflow/sql
+          - ./etl_home/bin:/usr/local/airflow/bin
+          - ./etl_home/logs:/usr/local/airflow/logs
+          - ./etl_home/etl_base/requirements.txt:/requirements.txt
+        environment:
+            - LOAD_EX=n
+            - FERNET_KEY=xfaECYb20a2PzNTcIYXFXztTlaEVD43KwUoXeer_83k=
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+            - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql+psycopg2://airflow:airflow@postgres:5432/airflow            
+            - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+            - EXECUTOR=Celery
+            # - POSTGRES_USER=airflow
+            # - POSTGRES_PASSWORD=airflow
+            # - POSTGRES_DB=airflow
+            # - REDIS_PASSWORD=redispass
+        command: scheduler
+
+    worker:
+        image: jessewei/sqlg-airflow:latest
+        restart: always
+        depends_on:
+            - scheduler
+        volumes:
+            - ./config/var.json:/usr/local/airflow/var.json          
+            - ./config/conn.json:/usr/local/airflow/conn.json          
+            - ./etl_home/etl_base:/usr/local/airflow/etl_base
+            - ./etl_home/etl_base/dags:/usr/local/airflow/dags
+            - ./etl_home/etl_base/sql:/usr/local/airflow/sql
+            - ./etl_home/bin:/usr/local/airflow/bin
+            - ./etl_home/logs:/usr/local/airflow/logs
+            - ./etl_home/etl_base/requirements.txt:/requirements.txt
+        environment:
+            - LOAD_EX=n
+            - FERNET_KEY=xfaECYb20a2PzNTcIYXFXztTlaEVD43KwUoXeer_83k=
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+            - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql+psycopg2://airflow:airflow@postgres:5432/airflow            
+            - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+            - EXECUTOR=Celery
+           # - POSTGRES_USER=airflow
+            # - POSTGRES_PASSWORD=airflow
+            # - POSTGRES_DB=airflow
+            # - REDIS_PASSWORD=redispass
+        command: worker
