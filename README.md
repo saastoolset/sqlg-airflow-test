@@ -1,12 +1,12 @@
 # sqlg-airflow
-[![CI status](https://github.com/jessewei/sqlg-airflow/workflows/CI/badge.svg?branch=master)](https://github.com/jessewei/sqlg-airflow/actions?query=workflow%3ACI+branch%3Amaster+event%3Apush)
-[![Docker Build status](https://img.shields.io/docker/build/jessewei/sqlg-airflow?style=plastic)](https://hub.docker.com/r/jessewei/sqlg-airflow/tags?ordering=last_updated)
+[![CI status](https://github.com/saastoolset/sqlg-airflow/workflows/CI/badge.svg?branch=master)](https://github.com/saastoolset/sqlg-airflow/actions?query=workflow%3ACI+branch%3Amaster+event%3Apush)
+[![Docker Build status](https://img.shields.io/docker/build/saastoolset/sqlg-airflow?style=plastic)](https://hub.docker.com/r/saastoolset/sqlg-airflow/tags?ordering=last_updated)
 
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/jessewei/sqlg-airflow/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/jessewei/sqlg-airflow.svg)]()
-[![Docker Stars](https://img.shields.io/docker/stars/jessewei/sqlg-airflow.svg)]()
+[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/saastoolset/sqlg-airflow/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/saastoolset/sqlg-airflow.svg)]()
+[![Docker Stars](https://img.shields.io/docker/stars/saastoolset/sqlg-airflow.svg)]()
 
-This repository contains **Dockerfile** of [apache-airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/jessewei/sqlg-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
+This repository contains **Dockerfile** of [apache-airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/saastoolset/sqlg-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
 Updated: add oracle client and cx_Oracle
 Updated: add mssql, pyodbc
@@ -23,26 +23,26 @@ Updated: add mssql, pyodbc
 
 Pull the image from the Docker repository.
 
-    docker pull jessewei/sqlg-airflow
+    docker pull saastoolset/sqlg-airflow
 
 ## Build
 
 Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
 
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t jessewei/sqlg-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t jessewei/sqlg-airflow .
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t saastoolset/sqlg-airflow .
+    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow .
 
 or combined
 
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t jessewei/sqlg-airflow .
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow .
 
-Don't forget to update the airflow images in the docker-compose files to jessewei/sqlg-airflow:latest.
+Don't forget to update the airflow images in the docker-compose files to saastoolset/sqlg-airflow:latest.
 
 ## Usage
 
 By default, sqlg-airflow runs Airflow with **SequentialExecutor** :
 
-    docker run -d -p 8080:8080 jessewei/sqlg-airflow webserver
+    docker run -d -p 8080:8080 saastoolset/sqlg-airflow webserver
 
 If you want to run another executor, use the other docker-compose.yml files provided in this repository.
 
@@ -58,7 +58,7 @@ NB : If you want to have DAGs example loaded (default=False), you've to set the 
 
 `LOAD_EX=n`
 
-    docker run -d -p 8080:8080 -e LOAD_EX=y jessewei/sqlg-airflow
+    docker run -d -p 8080:8080 -e LOAD_EX=y saastoolset/sqlg-airflow
 
 If you want to use Ad hoc query, make sure you've configured connections:
 Go to Admin -> Connections and Edit "postgres_default" set this values (equivalent to values in airflow.cfg/docker-compose*.yml) :
@@ -69,7 +69,7 @@ Go to Admin -> Connections and Edit "postgres_default" set this values (equivale
 
 For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default sqlg-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
 
-    docker run jessewei/sqlg-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
+    docker run saastoolset/sqlg-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 
 ## Configuring Airflow
 
@@ -115,7 +115,7 @@ This can be used to scale to a multi node setup using docker swarm.
 
 If you want to run other airflow sub-commands, such as `list_dags` or `clear` you can do so like this:
 
-    docker run --rm -ti jessewei/sqlg-airflow airflow list_dags
+    docker run --rm -ti saastoolset/sqlg-airflow airflow list_dags
 
 or with your docker-compose set up like this:
 
@@ -123,8 +123,8 @@ or with your docker-compose set up like this:
 
 You can also use this to run a bash shell or any other command in the same environment that airflow would be run in:
 
-    docker run --rm -ti jessewei/sqlg-airflow bash
-    docker run --rm -ti jessewei/sqlg-airflow ipython
+    docker run --rm -ti saastoolset/sqlg-airflow bash
+    docker run --rm -ti saastoolset/sqlg-airflow ipython
 
 # Simplified SQL database configuration using PostgreSQL
 
