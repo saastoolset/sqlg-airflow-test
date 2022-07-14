@@ -1,8 +1,7 @@
-# sqlg-airflow testing repo
+sqlg-airflow repository for testing
 
 [![Docker Build status](https://img.shields.io/docker/build/saastoolset/sqlg-airflow?style=plastic)](https://hub.docker.com/r/saastoolset/sqlg-airflow/tags?ordering=last_updated)
 
-conda env create -f environment.yml
 
 [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/saastoolset/sqlg-airflow/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/saastoolset/sqlg-airflow.svg)]()
@@ -10,24 +9,88 @@ conda env create -f environment.yml
 
 This repository contains **Dockerfile** of [apache-airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/saastoolset/sqlg-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
-Updated: add oracle client and cx_Oracle
-Updated: add mssql, pyodbc
+**Table of Contents**
+- [1. The proposed environment](#1-the-proposed-environment)
+- [2. Envirioment preparation](#2-envirioment-preparation)
+  - [2.1. Create github repo by fork](#21-create-github-repo-by-fork)
+  - [2.2. Create sqlb-test virtual environment for test](#22-create-sqlb-test-virtual-environment-for-test)
+  - [2.3. Start IDE for program test](#23-start-ide-for-program-test)
+- [3. sqlg-airflow image maintain](#3-sqlg-airflow-image-maintain)
+  - [3.1. Informations](#31-informations)
+  - [3.2. Installation](#32-installation)
+  - [3.3. Build](#33-build)
+  - [3.4. Usage](#34-usage)
+  - [3.5. Configuring Airflow](#35-configuring-airflow)
+  - [3.6. Custom Airflow plugins](#36-custom-airflow-plugins)
+  - [3.7. Install custom python package](#37-install-custom-python-package)
+  - [3.8. UI Links](#38-ui-links)
+  - [3.9. Scale the number of workers](#39-scale-the-number-of-workers)
+  - [3.10. Running other airflow commands](#310-running-other-airflow-commands)
+- [4. Simplified SQL database configuration using PostgreSQL](#4-simplified-sql-database-configuration-using-postgresql)
+- [5. Simplified Celery broker configuration using Redis](#5-simplified-celery-broker-configuration-using-redis)
+- [6. Wanna help?](#6-wanna-help)
+
+***
+# 1. The proposed environment 
+Follwing step will assume those tools are installed
+
+- [Docker](https://www.docker.com/products/docker-desktop/) as container tool
+- [Visual Code](https://code.visualstudio.com/download) as IDE
+- [Python](https://www.anaconda.com/products/distribution) as host language with Anaconda distribution
+- conda as environment manager
+- pypi/pip as package repository and manager
+- [Apache Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html) as scheduler 
+- sqlg as ETL transformation tools
+
+# 2. Envirioment preparation
+
+## 2.1. Create github repo by fork
+
+1. [create fork from sqlg-airflow-test](https://github.com/saastoolset/sqlg-airflow-test/fork)
+
+2. Clone sqlg-airflow-test from github
+  - Suggest directory as C:\Proj\saastoolset\sqlg-airflow-test
+3. Open Anaconda command line, and switch to working directory to
+  - C:\Proj\saastoolset\sqlg-airflow-test
+
+## 2.2. Create sqlb-test virtual environment for test
+
+- Python used to create virtual environment to keep environment clean when leverage and test different package during development. 
+
+1. Create virtual env by conda
+
+    $ conda env sqlb_env/sqlb-test-env.yml
+
+2. Activate sqlb-test environment
+    
+    $ activate sqlb-test
 
 
-## Informations
+## 2.3. Start IDE for program test
+1. start 
+   
+    $ code .
+
+2. Verify required extension 
+- python
+  
+
+# 3. sqlg-airflow image maintain
+
+## 3.1. Informations
 
 * Based on Python (3.7-slim-buster) official Image [python:3.7-slim-buster](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
 * Install [Docker](https://www.docker.com/)
 * Install [Docker Compose](https://docs.docker.com/compose/install/)
 * Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
 
-## Installation
+## 3.2. Installation
 
 Pull the image from the Docker repository.
 
     docker pull saastoolset/sqlg-airflow
 
-## Build
+## 3.3. Build
 
 Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
 
@@ -40,7 +103,7 @@ or combined
 
 Don't forget to update the airflow images in the docker-compose files to saastoolset/sqlg-airflow:latest.
 
-## Usage
+## 3.4. Usage
 
 By default, sqlg-airflow runs Airflow with **SequentialExecutor** :
 
@@ -73,7 +136,7 @@ For encrypted connection passwords (in Local or Celery Executor), you must have 
 
     docker run saastoolset/sqlg-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 
-## Configuring Airflow
+## 3.5. Configuring Airflow
 
 It's possible to set any configuration value for Airflow from environment variables, which are used over values from the airflow.cfg.
 
@@ -83,7 +146,7 @@ Check out the [Airflow documentation](http://airflow.readthedocs.io/en/latest/ho
 
 You can also define connections via environment variables by prefixing them with `AIRFLOW_CONN_` - for example `AIRFLOW_CONN_POSTGRES_MASTER=postgres://user:password@localhost:5432/master` for a connection called "postgres_master". The value is parsed as a URI. This will work for hooks etc, but won't show up in the "Ad-hoc Query" section unless an (empty) connection is also created in the DB
 
-## Custom Airflow plugins
+## 3.6. Custom Airflow plugins
 
 Airflow allows for custom user-created plugins which are typically found in `${AIRFLOW_HOME}/plugins` folder. Documentation on plugins can be found [here](https://airflow.apache.org/plugins.html)
 
@@ -93,19 +156,19 @@ In order to incorporate plugins into your docker container
     - Include the folder as a volume in command-line `-v $(pwd)/plugins/:/usr/local/airflow/plugins`
     - Use docker-compose-LocalExecutor.yml or docker-compose-CeleryExecutor.yml which contains support for adding the plugins folder as a volume
 
-## Install custom python package
+## 3.7. Install custom python package
 
 - Create a file "requirements.txt" with the desired python modules
 - Mount this file as a volume `-v $(pwd)/requirements.txt:/requirements.txt` (or add it as a volume in docker-compose file)
 - The entrypoint.sh script execute the pip install command (with --user option)
 
-## UI Links
+## 3.8. UI Links
 
 - Airflow: [localhost:8080](http://localhost:8080/)
 - Flower: [localhost:5555](http://localhost:5555/)
 
 
-## Scale the number of workers
+## 3.9. Scale the number of workers
 
 Easy scaling using docker-compose:
 
@@ -113,7 +176,7 @@ Easy scaling using docker-compose:
 
 This can be used to scale to a multi node setup using docker swarm.
 
-## Running other airflow commands
+## 3.10. Running other airflow commands
 
 If you want to run other airflow sub-commands, such as `list_dags` or `clear` you can do so like this:
 
@@ -128,7 +191,7 @@ You can also use this to run a bash shell or any other command in the same envir
     docker run --rm -ti saastoolset/sqlg-airflow bash
     docker run --rm -ti saastoolset/sqlg-airflow ipython
 
-# Simplified SQL database configuration using PostgreSQL
+# 4. Simplified SQL database configuration using PostgreSQL
 
 If the executor type is set to anything else than *SequentialExecutor* you'll need an SQL database.
 Here is a list of PostgreSQL configuration variables and their default values. They're used to compute
@@ -158,7 +221,7 @@ Therefore you must provide extras parameters URL-encoded, starting with a leadin
 
     POSTGRES_EXTRAS="?sslmode=verify-full&sslrootcert=%2Fetc%2Fssl%2Fcerts%2Fca-certificates.crt"
 
-# Simplified Celery broker configuration using Redis
+# 5. Simplified Celery broker configuration using Redis
 
 If the executor type is set to *CeleryExecutor* you'll need a Celery broker. Here is a list of Redis configuration variables
 and their default values. They're used to compute the `AIRFLOW__CELERY__BROKER_URL` variable for you if you don't provide
@@ -174,6 +237,6 @@ it explicitly:
 
 You can also use those variables to adapt your compose file to match an existing Redis instance managed elsewhere.
 
-# Wanna help?
+# 6. Wanna help?
 
 Fork, improve and PR.
