@@ -1,5 +1,5 @@
-# sqlg-airflow
-[![CI status](https://github.com/saastoolset/sqlg-airflow/workflows/CI/badge.svg?branch=master)](https://github.com/saastoolset/sqlg-airflow/actions?query=workflow%3ACI+branch%3Amaster+event%3Apush)
+# sqlg-airflow testing repo
+
 [![Docker Build status](https://img.shields.io/docker/build/saastoolset/sqlg-airflow?style=plastic)](https://hub.docker.com/r/saastoolset/sqlg-airflow/tags?ordering=last_updated)
 
 conda env create -f environment.yml
