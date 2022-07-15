@@ -64,7 +64,7 @@ Follwing step will assume those tools are installed
 
 1. Create virtual env by conda
 
-    $ conda env sqlb_env/sqlb-test-env.yml
+    $ conda env create -f sqlb_env/sqlb-test-env.yml
 
 2. Activate sqlb-test environment
     
