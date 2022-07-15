@@ -48,12 +48,16 @@ templated_command = """
         echo "TIMEZONE1: {{ (dag_run.logical_date.astimezone(dag.timezone)).strftime('%Y%m%d') }}"        
         echo "TIMEZONE2: {{ logical_date.in_timezone('Asia/Taipei') }}"        
         echo "TIMEZONE3: {{ logical_date.in_timezone('Asia/Taipei').strftime('%Y%m%d') }}"        
+        echo "TIMEZONE4: {{ (logical_date.astimezone(dag.timezone)).strftime('%Y%m%d') }}"        
         echo "{{ macros.ds_add(ds, 7)}}"
         echo "{{ params.my_param }}"
     {% endfor %}
 """
 
 #  (execution_date.astimezone('Asia/Taipei')).strftime('%Y%m%d')
+#  (logical_date.strftime('%Y%m%d'))
+#  (logical_date.astimezone('Asia/Taipei')).strftime('%Y%m%d')
+# (dag_run.logical_date.astimezone(dag.timezone)).strftime('%Y%m%d')
 # .in_timezone('Asia/Taipei')
 #        echo "TIMEZONE2: {{ (dag_run.logical_date.in_timezone('Asia/Taipei')).strftime('%Y%m%d') }}"        
 #        echo "TIMEZONE2: {{ logical_date.in_timezone('Asia/Taipei') }}"        

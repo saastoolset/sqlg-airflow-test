@@ -15,20 +15,25 @@ This repository contains **Dockerfile** of [apache-airflow](https://github.com/a
   - [2.1. Create github repo by fork](#21-create-github-repo-by-fork)
   - [2.2. Create sqlb-test virtual environment for test](#22-create-sqlb-test-virtual-environment-for-test)
   - [2.3. Start IDE for program test](#23-start-ide-for-program-test)
-- [3. sqlg-airflow image maintain](#3-sqlg-airflow-image-maintain)
-  - [3.1. Informations](#31-informations)
-  - [3.2. Installation](#32-installation)
-  - [3.3. Build](#33-build)
-  - [3.4. Usage](#34-usage)
-  - [3.5. Configuring Airflow](#35-configuring-airflow)
-  - [3.6. Custom Airflow plugins](#36-custom-airflow-plugins)
-  - [3.7. Install custom python package](#37-install-custom-python-package)
-  - [3.8. UI Links](#38-ui-links)
-  - [3.9. Scale the number of workers](#39-scale-the-number-of-workers)
-  - [3.10. Running other airflow commands](#310-running-other-airflow-commands)
-- [4. Simplified SQL database configuration using PostgreSQL](#4-simplified-sql-database-configuration-using-postgresql)
-- [5. Simplified Celery broker configuration using Redis](#5-simplified-celery-broker-configuration-using-redis)
-- [6. Wanna help?](#6-wanna-help)
+- [3. sqlg-airflow install and run script](#3-sqlg-airflow-install-and-run-script)
+  - [3.1. Windows](#31-windows)
+  - [3.2. Linux](#32-linux)
+  - [3.3. Mac](#33-mac)
+- [4. sqlg-airflow image maintain](#4-sqlg-airflow-image-maintain)
+  - [4.1. Informations](#41-informations)
+  - [4.2. Installation](#42-installation)
+  - [4.3. Build](#43-build)
+  - [4.4. Usage](#44-usage)
+  - [4.5. Configuring Airflow](#45-configuring-airflow)
+  - [4.6. Custom Airflow plugins](#46-custom-airflow-plugins)
+  - [4.7. Install custom python package](#47-install-custom-python-package)
+  - [4.8. UI Links](#48-ui-links)
+  - [4.9. Scale the number of workers](#49-scale-the-number-of-workers)
+  - [4.10. Running other airflow commands](#410-running-other-airflow-commands)
+- [5. Simplified SQL database configuration using PostgreSQL](#5-simplified-sql-database-configuration-using-postgresql)
+- [6. Simplified Celery broker configuration using Redis](#6-simplified-celery-broker-configuration-using-redis)
+- [7. Wanna help?](#7-wanna-help)
+
 
 ***
 # 1. The proposed environment 
@@ -74,23 +79,47 @@ Follwing step will assume those tools are installed
 2. Verify required extension 
 - python
   
+# 3. sqlg-airflow install and run script
 
-# 3. sqlg-airflow image maintain
+    (sqlb-test) C:\Proj\saastoolset\sqlg-airflow-test>up -h
+    Batch start: 2022/07/14 週四-20:21:13.22
+    .
+    "up.bat: The Airflow startup script, usage:"
+    "up.bat [0|1|2|3|-h]"
+    "0, Start SingleNode, port=8080"
+    "1, Start MultiNode, port=8081"
+    "2, Start Tutorial, port=8082"
+    "3, Start Example, port=8083"
+    "-h, help message"
 
-## 3.1. Informations
+## 3.1. Windows
+- Start by option and open in browser, e.g. tutorial model
+    C:> up 2
+
+## 3.2. Linux
+- Start by option and open in browser, e.g. tutorial model    
+    $ up 2
+
+## 3.3. Mac
+- Start by option and open in browser, e.g. tutorial model    
+    TBD
+
+# 4. sqlg-airflow image maintain
+
+## 4.1. Informations
 
 * Based on Python (3.7-slim-buster) official Image [python:3.7-slim-buster](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
 * Install [Docker](https://www.docker.com/)
 * Install [Docker Compose](https://docs.docker.com/compose/install/)
 * Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
 
-## 3.2. Installation
+## 4.2. Installation
 
 Pull the image from the Docker repository.
 
     docker pull saastoolset/sqlg-airflow
 
-## 3.3. Build
+## 4.3. Build
 
 Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
 
@@ -103,7 +132,7 @@ or combined
 
 Don't forget to update the airflow images in the docker-compose files to saastoolset/sqlg-airflow:latest.
 
-## 3.4. Usage
+## 4.4. Usage
 
 By default, sqlg-airflow runs Airflow with **SequentialExecutor** :
 
@@ -136,7 +165,7 @@ For encrypted connection passwords (in Local or Celery Executor), you must have 
 
     docker run saastoolset/sqlg-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 
-## 3.5. Configuring Airflow
+## 4.5. Configuring Airflow
 
 It's possible to set any configuration value for Airflow from environment variables, which are used over values from the airflow.cfg.
 
@@ -146,7 +175,7 @@ Check out the [Airflow documentation](http://airflow.readthedocs.io/en/latest/ho
 
 You can also define connections via environment variables by prefixing them with `AIRFLOW_CONN_` - for example `AIRFLOW_CONN_POSTGRES_MASTER=postgres://user:password@localhost:5432/master` for a connection called "postgres_master". The value is parsed as a URI. This will work for hooks etc, but won't show up in the "Ad-hoc Query" section unless an (empty) connection is also created in the DB
 
-## 3.6. Custom Airflow plugins
+## 4.6. Custom Airflow plugins
 
 Airflow allows for custom user-created plugins which are typically found in `${AIRFLOW_HOME}/plugins` folder. Documentation on plugins can be found [here](https://airflow.apache.org/plugins.html)
 
@@ -156,19 +185,19 @@ In order to incorporate plugins into your docker container
     - Include the folder as a volume in command-line `-v $(pwd)/plugins/:/usr/local/airflow/plugins`
     - Use docker-compose-LocalExecutor.yml or docker-compose-CeleryExecutor.yml which contains support for adding the plugins folder as a volume
 
-## 3.7. Install custom python package
+## 4.7. Install custom python package
 
 - Create a file "requirements.txt" with the desired python modules
 - Mount this file as a volume `-v $(pwd)/requirements.txt:/requirements.txt` (or add it as a volume in docker-compose file)
 - The entrypoint.sh script execute the pip install command (with --user option)
 
-## 3.8. UI Links
+## 4.8. UI Links
 
 - Airflow: [localhost:8080](http://localhost:8080/)
 - Flower: [localhost:5555](http://localhost:5555/)
 
 
-## 3.9. Scale the number of workers
+## 4.9. Scale the number of workers
 
 Easy scaling using docker-compose:
 
@@ -176,7 +205,7 @@ Easy scaling using docker-compose:
 
 This can be used to scale to a multi node setup using docker swarm.
 
-## 3.10. Running other airflow commands
+## 4.10. Running other airflow commands
 
 If you want to run other airflow sub-commands, such as `list_dags` or `clear` you can do so like this:
 
@@ -191,7 +220,7 @@ You can also use this to run a bash shell or any other command in the same envir
     docker run --rm -ti saastoolset/sqlg-airflow bash
     docker run --rm -ti saastoolset/sqlg-airflow ipython
 
-# 4. Simplified SQL database configuration using PostgreSQL
+# 5. Simplified SQL database configuration using PostgreSQL
 
 If the executor type is set to anything else than *SequentialExecutor* you'll need an SQL database.
 Here is a list of PostgreSQL configuration variables and their default values. They're used to compute
@@ -221,7 +250,7 @@ Therefore you must provide extras parameters URL-encoded, starting with a leadin
 
     POSTGRES_EXTRAS="?sslmode=verify-full&sslrootcert=%2Fetc%2Fssl%2Fcerts%2Fca-certificates.crt"
 
-# 5. Simplified Celery broker configuration using Redis
+# 6. Simplified Celery broker configuration using Redis
 
 If the executor type is set to *CeleryExecutor* you'll need a Celery broker. Here is a list of Redis configuration variables
 and their default values. They're used to compute the `AIRFLOW__CELERY__BROKER_URL` variable for you if you don't provide
@@ -237,6 +266,6 @@ it explicitly:
 
 You can also use those variables to adapt your compose file to match an existing Redis instance managed elsewhere.
 
-# 6. Wanna help?
+# 7. Wanna help?
 
 Fork, improve and PR.
