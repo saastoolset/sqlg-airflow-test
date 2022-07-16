@@ -14,7 +14,7 @@ services:
         ports:
           - 5432:5432
     webserver:
-        image: saastoolset/sqlg-airflow:latest
+        image: saastoolset/sqlg-airflow-test:latest
         restart: always
         container_name: air_webserver_0
         depends_on:
