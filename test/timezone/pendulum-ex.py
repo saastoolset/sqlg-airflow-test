@@ -1,6 +1,9 @@
 #
 # https://towardsdatascience.com/pendulum-one-of-the-most-useful-python-libraries-you-have-ever-seen-e2ecc365c8c0
 #
+# (logical_date.astimezone('UTC')).strftime('%Y%m%d') error
+# add on 2016, remove 2017 Improves compatibility with stdlib 
+# 
 
 import pendulum as pdl
 from datetime import datetime
@@ -93,3 +96,11 @@ print(pdl.now())
 # print(pdl.now().astimezone('Asia/Taipei'))
 print(pdl.now().astimezone(pdl.timezone('Asia/Taipei')))
 print(pdl.now().astimezone(pdl.timezone('UTC')))
+print(pdl.now().in_timezone('UTC'))
+
+# Lesson Learnt
+# - Know why string can use and why not, 
+#   - trace pendulum.astimezone history
+#   - trace how stdlib change, and why
+# - Know how to use TZ string
+# - Know why we don't use TZ string
