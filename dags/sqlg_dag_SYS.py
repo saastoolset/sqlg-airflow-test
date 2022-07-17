@@ -20,9 +20,8 @@ from airflow.models import Variable
 
 #from acme.operators.dwh_operators import PostgresOperatorWithTemplatedParams
 ExternalTaskSensor.ui_color = 'white'
-proj_start_date = pendulum.datetime(2021, 1, 1,  tz="Asia/Taipei")
-#proj_start_date = pendulum.datetime(2021, 1, 1,  tz="Etc/GMT-8")
-#proj_start_date = pendulum.datetime(2021, 1, 1,  tz="Etc/GMT+8")
+#proj_start_date = pendulum.datetime(2021, 1, 1,  tz="Asia/Taipei")
+proj_start_date = pendulum.datetime(2021, 1, 1,  tz="Etc/GMT-8")
 #proj_start_date = pendulum.datetime(2021, 1, 1)
 
 
@@ -38,9 +37,7 @@ def set_exec_date(ds, **kwargs):
 #    Variable.set('END_DT', kwargs['execution_date'])
     kwargs['ti'].xcom_push(key='sqlg_execution_date', value=kwargs['logical_date'])
     Variable.set('sqlg_execution_date', kwargs['logical_date'])
-    Variable.set('END_DT', kwargs['logical_date'])
-    logging.info(f"PLN:DEBUG:D_STG_INIT1:logical_date: {kwargs['logical_date']}")
-    # logging.info(kwargs['logical_date'])
+    Variable.set('END_DT', kwargs['logical_date'])    
     
     return
 
@@ -60,7 +57,7 @@ D_STG_INIT = airflow.DAG(
     default_args=args,
     template_searchpath=tmpl_search_path,        
     max_active_runs=1)
-    
+
 my_taskid = 'SYS_STS_STG'
 SYS_STS_STG = PythonOperator(task_id=my_taskid,
     #schedule_interval=None,
@@ -83,5 +80,4 @@ SYS_STS_STG = PythonOperator(task_id=my_taskid,
 #    execution_delta=None,  # Same day as today
 #    )
 
-#logging.info(f"PLN:DEBUG:D_STG_INIT2: {D_STG_INIT.latest_execution_date}")
-
+print("PLN:DEBUG:D_STG_INIT:", D_STG_INIT.latest_execution_date)

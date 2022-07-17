@@ -82,7 +82,7 @@ args = {
 job_flow_name = "D_ODS_SAL"
 data_stage = job_flow_name.split('_')
 tags = data_stage
-args["email"] = ["Chen.Ivy@inventec.com","tao-dhbdadmin@inventec.com","Yang.KimiYP@inventec.com"]
+#args["email"] = ["Chen.Ivy@inventec.com","tao-dhbdadmin@inventec.com","Yang.KimiYP@inventec.com"]
 D_ODS_SAL = airflow.DAG(
     "D_ODS_SAL",
     tags=tags, 
@@ -103,13 +103,16 @@ my_taskid = "ODS_PSG_CUSTOMER"
 ODS_PSG_CUSTOMER = BashOperator(
     #autocommit=True,
     task_id=my_taskid,
-    pool = "sql_pool",
+    #pool = "sql_pool",
     dag=D_ODS_SAL,
 
     # parameters=({":END_DT_CHAR":"{{ (execution_date.astimezone('Asia/Taipei')).strftime('%Y%m%d') }}"}),    
     #timeout=60*60*3,
     bash_command= "echo EXECUTE SQLEXT." + my_taskid + "_SP "+  
-		"{{ (dag_run.logical_date.astimezone(dag.timezone)).strftime('%Y%m%d') }}" +
+#		"{{ (logical_date.astimezone(dag.timezone)).strftime('%Y%m%d') }}" +
+#		"{{ (dag_run.logical_date.astimezone(dag.timezone)).strftime('%Y%m%d') }}" +
+#		"{{ logical_date.in_timezone('Asia/Taipei').strftime('%Y%m%d')  }}" +
+		"{{ (logical_date.strftime('%Y%m%d')) }}" +
         ";"
     )
 
@@ -158,7 +161,7 @@ proxy_D_ODS_SALxD_STG_INIT__SYS_STS_STG= DummyOperator(
 			
 my_taskid = "D_ODS_SALxD_STG_INIT__SYS_STS_STG"
 D_ODS_SALxD_STG_INIT__SYS_STS_STG= ExternalTaskSensor(
-    pool = "sensor_pool",
+    #pool = "sensor_pool",
     task_id=my_taskid,
     external_dag_id="D_STG_INIT",
     external_task_id="SYS_STS_STG",

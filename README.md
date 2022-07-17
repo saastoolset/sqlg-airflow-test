@@ -94,6 +94,7 @@ Follwing step will assume those tools are installed
 
 ## 3.1. Windows
 - Start by option and open in browser, e.g. tutorial model
+    
     C:> up 2
 
 ## 3.2. Linux
@@ -104,11 +105,12 @@ Follwing step will assume those tools are installed
 - Start by option and open in browser, e.g. tutorial model    
     TBD
 
+
 # 4. sqlg-airflow image maintain
 
 ## 4.1. Informations
 
-* Based on Python (3.7-slim-buster) official Image [python:3.7-slim-buster](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
+* Based on Python (3.9.6) official Image [python:3.9.6-bullseye](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
 * Install [Docker](https://www.docker.com/)
 * Install [Docker Compose](https://docs.docker.com/compose/install/)
 * Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
@@ -117,18 +119,22 @@ Follwing step will assume those tools are installed
 
 Pull the image from the Docker repository.
 
-    docker pull saastoolset/sqlg-airflow
+    docker pull saastoolset/sqlg-airflow-test
 
 ## 4.3. Build
 
+Build default from Dockerfile
+
+    docker build --rm  -t saastoolset/sqlg-airflow-test:latest .
+
 Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
 
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t saastoolset/sqlg-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow .
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t saastoolset/sqlg-airflow-test .
+    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow-test .
 
 or combined
 
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow .
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t saastoolset/sqlg-airflow-test .
 
 Don't forget to update the airflow images in the docker-compose files to saastoolset/sqlg-airflow:latest.
 
@@ -136,7 +142,7 @@ Don't forget to update the airflow images in the docker-compose files to saastoo
 
 By default, sqlg-airflow runs Airflow with **SequentialExecutor** :
 
-    docker run -d -p 8080:8080 saastoolset/sqlg-airflow webserver
+    docker run -d -p 8080:8080 saastoolset/sqlg-airflow-test webserver
 
 If you want to run another executor, use the other docker-compose.yml files provided in this repository.
 
@@ -152,7 +158,7 @@ NB : If you want to have DAGs example loaded (default=False), you've to set the 
 
 `LOAD_EX=n`
 
-    docker run -d -p 8080:8080 -e LOAD_EX=y saastoolset/sqlg-airflow
+    docker run -d -p 8080:8080 -e LOAD_EX=y saastoolset/sqlg-airflow-test
 
 If you want to use Ad hoc query, make sure you've configured connections:
 Go to Admin -> Connections and Edit "postgres_default" set this values (equivalent to values in airflow.cfg/docker-compose*.yml) :
@@ -209,7 +215,7 @@ This can be used to scale to a multi node setup using docker swarm.
 
 If you want to run other airflow sub-commands, such as `list_dags` or `clear` you can do so like this:
 
-    docker run --rm -ti saastoolset/sqlg-airflow airflow list_dags
+    docker run --rm -ti saastoolset/sqlg-airflow-test airflow list_dags
 
 or with your docker-compose set up like this:
 
@@ -217,8 +223,8 @@ or with your docker-compose set up like this:
 
 You can also use this to run a bash shell or any other command in the same environment that airflow would be run in:
 
-    docker run --rm -ti saastoolset/sqlg-airflow bash
-    docker run --rm -ti saastoolset/sqlg-airflow ipython
+    docker run --rm -ti saastoolset/sqlg-airflow-test bash
+    docker run --rm -ti saastoolset/sqlg-airflow-test ipython
 
 # 5. Simplified SQL database configuration using PostgreSQL
 
