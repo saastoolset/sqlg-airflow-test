@@ -2,7 +2,9 @@
 # https://towardsdatascience.com/pendulum-one-of-the-most-useful-python-libraries-you-have-ever-seen-e2ecc365c8c0
 #
 # (logical_date.astimezone('UTC')).strftime('%Y%m%d') error
-# add on 2016, remove 2017 Improves compatibility with stdlib 
+# 23 Nov 2016: '1.4.4' : Adds support of timezone strings for astimezone() 
+# 09 May 2018: '2.0.0' : Remove for Improves compatibility with stdlib 
+# https://github.com/jessewei/pendulum/blame/c2c73a9daa9930a6f25e04e3e956a02b3f539d04/pendulum/datetime.py
 # 
 
 import pendulum as pdl
@@ -97,6 +99,8 @@ print(pdl.now())
 print(pdl.now().astimezone(pdl.timezone('Asia/Taipei')))
 print(pdl.now().astimezone(pdl.timezone('UTC')))
 print(pdl.now().in_timezone('UTC'))
+print(pdl.now().in_timezone(pdl.timezone('UTC')))
+print(pdl.now().in_tz(pdl.timezone('UTC')))
 
 # Lesson Learnt
 # - Know why string can use and why not, 
