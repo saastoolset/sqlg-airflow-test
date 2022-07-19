@@ -68,7 +68,7 @@ Follwing step will assume those tools are installed
 
 2. Activate sqlb-test environment
     
-    $ activate sqlb-test
+    $ conda activate sqlb-test
 
 
 ## 2.3. Start IDE for program test
@@ -103,7 +103,7 @@ Follwing step will assume those tools are installed
 
 ## 3.3. Mac
 - Start by option and open in browser, e.g. tutorial model    
-    TBD
+    $ up 2
 
 
 # 4. sqlg-airflow image maintain
