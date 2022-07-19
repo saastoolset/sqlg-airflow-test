@@ -92,19 +92,24 @@ Follwing step will assume those tools are installed
     "3, Start Example, port=8083"
     "-h, help message"
 
-## 3.1. Windows
+## 3.1 Start container 
+
+### 3.1.1. Windows
 - Start by option and open in browser, e.g. tutorial model
     
     C:> up 2
 
-## 3.2. Linux
+### 3.1.2. Linux
 - Start by option and open in browser, e.g. tutorial model    
-    $ up 2
+    $ up.sh 2
 
-## 3.3. Mac
+### 3.1.3. Mac
 - Start by option and open in browser, e.g. tutorial model    
-    $ up 2
+    $ sh up.sh 2
 
+## 3.2 
+- Open browser with 
+  127.0.0.1:8082
 
 # 4. sqlg-airflow image maintain
 
