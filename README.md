@@ -9,16 +9,17 @@ sqlg-airflow repository for testing
 
 This repository contains **Dockerfile** of [apache-airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/saastoolset/sqlg-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
-**Table of Contents**
 - [1. The proposed environment](#1-the-proposed-environment)
 - [2. Envirioment preparation](#2-envirioment-preparation)
   - [2.1. Create github repo by fork](#21-create-github-repo-by-fork)
   - [2.2. Create sqlb-test virtual environment for test](#22-create-sqlb-test-virtual-environment-for-test)
   - [2.3. Start IDE for program test](#23-start-ide-for-program-test)
 - [3. sqlg-airflow install and run script](#3-sqlg-airflow-install-and-run-script)
-  - [3.1. Windows](#31-windows)
-  - [3.2. Linux](#32-linux)
-  - [3.3. Mac](#33-mac)
+  - [3.1 Start container](#31-start-container)
+    - [3.1.1. Windows](#311-windows)
+    - [3.1.2. Linux](#312-linux)
+    - [3.1.3. Mac](#313-mac)
+  - [3.2 Open Airflow UI](#32-open-airflow-ui)
 - [4. sqlg-airflow image maintain](#4-sqlg-airflow-image-maintain)
   - [4.1. Informations](#41-informations)
   - [4.2. Installation](#42-installation)
@@ -107,7 +108,7 @@ Follwing step will assume those tools are installed
 - Start by option and open in browser, e.g. tutorial model    
     $ sh up.sh 2
 
-## 3.2 
+## 3.2 Open Airflow UI
 - Open browser with 
   127.0.0.1:8082
 
