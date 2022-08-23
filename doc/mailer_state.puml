@@ -1,0 +1,28 @@
+
+@startuml
+
+[*] --> New
+' New--> [*]
+New: initial property
+
+
+New-> Ready: Mailer dequeue 
+Ready : Dequeue by queuename
+Ready : queuename 'X' mean wildcard
+
+Ready--> Work_in_process: send mail 
+Work_in_process: Mailer send mail batch
+
+Work_in_process-> Fail: Aborted
+Fail: Increase retried#
+Fail: Suspend when retried# > 3 
+Fail-->Ready: retry
+Fail-->Suspend: exceed retied #
+Suspend --> Ready: manual update
+Suspend --> [*]
+Suspend: Manual fix, mark as Ready
+
+Work_in_process--> Completed: Succeeded
+Completed --> [*]
+@enduml
+

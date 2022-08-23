@@ -1,4 +1,8 @@
 {
+    "airflow_db": {
+        "conn_type": "Sqlite",
+        "host": "/tmp/airflow.db",
+    },	
     "mssql_default": {
         "conn_type": "Microsoft SQL Server",
         "host": "10.15.1.67",
@@ -14,5 +18,5 @@
         "login": "etladm",
         "password": "etladm",
         "port": "1521"
-    }	
+    },
 }

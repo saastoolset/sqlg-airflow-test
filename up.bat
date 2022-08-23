@@ -16,7 +16,7 @@ if "%1" == "1" (
 
 if "%1" == "2" (
 	echo "2, Start Tutorial"
-	docker run -d -p 8082:8080 --name=air_webserver_2 -e AIRFLOW__WEBSERVER__RBAC=False -v %cd%/dags:/usr/local/airflow/dags saastoolset/sqlg-airflow:latest webserver
+	docker run -d -p 8082:8080 --name=air_webserver_2 -e AIRFLOW__WEBSERVER__RBAC=False -v %cd%/dags:/usr/local/airflow/dags -v %cd%/config/airflow.cfg:/usr/local/airflow/airflow.cfg saastoolset/sqlg-airflow:latest webserver
 	
 	rem ping 127.0.0.1 -n 40 > nul	
 	rem docker exec -it air_webserver_2 airflow users  create --role Admin --username airflow --email admin --firstname admin --lastname airflow --password airflow
@@ -25,7 +25,7 @@ if "%1" == "2" (
 
 if "%1" == "3" (
 	echo "3, Start Example"
-	docker run -d -p 8083:8080 --name=air_webserver_3 -e AIRFLOW__CORE__LOAD_EXAMPLES=True -e AIRFLOW__WEBSERVER__RBAC=False -v %cd%/dags:/usr/local/airflow/dags saastoolset/sqlg-airflow:latest webserver
+	docker run -d -p 8083:8080 --name=air_webserver_3 -e AIRFLOW__CORE__LOAD_EXAMPLES=True -e AIRFLOW__WEBSERVER__RBAC=False -v %cd%/dags:/usr/local/airflow/dags -v %cd%/config/airflow.cfg:/usr/local/airflow/airflow.cfg saastoolset/sqlg-airflow:latest webserver
 	rem ping 127.0.0.1 -n 40 > nul	
 	rem docker exec -it air_webserver_3 airflow users  create --role Admin --username airflow --email admin --firstname admin --lastname airflow --password airflow
 	goto END
