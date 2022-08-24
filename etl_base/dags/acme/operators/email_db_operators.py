@@ -13,10 +13,8 @@
 # limitations under the License.
 
 from typing import Any, Dict, List, Optional, Sequence, Union
-
-# from airflow.hooks.sqlite_hook import SqliteHook
-from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.sqlite.hooks.sqlite import SqliteHook
+# from airflow.providers.sqlite.hooks.sqlite import SqliteHook
+from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 
 from airflow.models import BaseOperator
 from airflow.utils.context import Context
@@ -24,11 +22,14 @@ from airflow.utils.email import send_email
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+import pandas as pd
+# import pandas.io.sql as psql
 
-from sqlalchemy.inspection import inspect
-from sqlalchemy.engine.reflection import Inspector
-from airflow.models.serialized_dag import SerializedDagModel
-import os
+
+# from sqlalchemy.inspection import inspect
+# from sqlalchemy.engine.reflection import Inspector
+# from airflow.models.serialized_dag import SerializedDagModel
+# import os
 
 
 class EmailFromDbOperator(BaseOperator):
@@ -65,64 +66,48 @@ class EmailFromDbOperator(BaseOperator):
         self.conn_id = conn_id
         # self.custom_headers = custom_headers
 
-
-
     def execute(self, context: Context):
-        print('EmailFromDbOperator:test!!')
-        # send_email(
-        #     self.to,
-        #     self.subject,
-        #     self.html_content,
-        #     files=self.files,
-        #     cc=self.cc,
-        #     bcc=self.bcc,
-        #     mime_subtype=self.mime_subtype,
-        #     mime_charset=self.mime_charset,
-        #     conn_id=self.conn_id,
-        #     custom_headers=self.custom_headers,
+        import re
 
-        # )
-        
+        print('EmailFromDbOperator:test!!')
         # retrieving your SQL Alchemy connection
         # if you are using Astro CLI this env variable will be set up automatically
-        self.get_dag_ids()
+        df = self.get_mail_property()
+        print('BEFORE SEND MAIL >>>>')
+        # Handle if NONE, if Error
+        for index, row in df.iterrows():
+            to_list = re.split('; |, |\n',row['MAIL_TO'])
+            print(row)
+            # print(
+            #     to_list,
+            #     row['subject'],
+            #     row['html_content'],
+            #     # conn_id=self.conn_id,
+            # )
+            # send_email(
+            #     to_list,
+            #     row['subject'],
+            #     row['html_content'],
+            #     # conn_id=self.conn_id,
+            # )            
+            # Update process status, P: process, F: Fail, S: Success
 
-        # engine = create_engine(conn_url)
 
-        # with Session(engine) as session:
-        #     result = session.query(SerializedDagModel).first()
-        #     print(result.get_dag_dependencies())
-
-
-    def get_dag_ids(self):
-        hook = PostgresHook(postgres_conn_id="airflow_db")
-        # sql_alchemy_conn
-        # hook = SqliteHook(sqlite_conn_id="airflow_db")
-        print('hook test:::>>>')
-        print(hook.get_conn())
-        print(hook.get_uri())
-        # records = hook.get_records(sql="select dag_id from dag")
-        # sql = '''
-        #     SELECT 
-        #         name
-        #     FROM 
-        #         sqlite_schema
-        #     WHERE 
-        #         type ='table' AND 
-        #         name NOT LIKE 'sqlite_%';
-        # '''
-        # mysql = """
-        #     SELECT count(*) FROM sqlite_schema
-        # """        
+    def get_mail_property(self):
+        hook = MsSqlHook(conn_name_attr=self.db_conn_id )
         mysql = """
-            select dag_id from dag
-        """        
-        records = hook.get_records(sql=mysql)
+            select *  from DM.DM_ML_QUEUE
+        """
+        # engine = hook.get_sqlalchemy_engine(self.db_conn_id)
+        df = hook.get_pandas_df(mysql)
 
-        print(records)
-
-        # engine = create_engine(hook.get_conn())
-        # pg_inspector: Inspector = inspect(engine)
-        # schema_names: List[str] = pg_inspector.get_schema_names()
-        # print(schema_names)
-
+        # print(df)
+        # print('db mail test <<<<')
+        # TODO: to a list 
+        # df = pd.DataFrame({
+        #     'to':['web.jesse@gmail.com,iec.jesse@gmail.com','jessewei_tw@hotmail.com'], 
+        #     'subject':['<ODP:ALERT:QAM>','<ODP:ALERT:PRO>' ], 
+        #     'html_content':['Mail test in html#1', 'Mail test in html#2'], 
+        #     })
+        print(df)
+        return df

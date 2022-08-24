@@ -14,5 +14,9 @@
         "login": "etladm",
         "password": "etladm",
         "port": "1521"
-    }
+    },
+    "airflow_db": {
+        "conn_type": "Sqlite",
+        "host": "/tmp/airflow.db"
+    },
 }

@@ -84,7 +84,6 @@ class EmailFromDbOperator(BaseOperator):
         #     mime_charset=self.mime_charset,
         #     conn_id=self.conn_id,
         #     custom_headers=self.custom_headers,
-
         # )
         
         # retrieving your SQL Alchemy connection
