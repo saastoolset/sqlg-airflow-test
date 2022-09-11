@@ -1,0 +1,35 @@
+@startuml
+
+
+entity INT_DG_USER{
+    *USER_NAME
+    --
+    USER_NAME_LOCAL
+    USER_ALIAS
+    EMPLOYEE_ID
+    CORP_EMAIL
+    DG_PRIMARY_ROLE
+}
+
+entity INT_DG_SUBJECT{
+* DG_SUBJECT_CODE
+--
+DG_SUBJECT_NAME
+DG_DOMAIN
+}
+
+entity INT_DG_ROLE{
+    *USER_NAME
+    *DG_ROLE
+    *DG_DOMAIN
+    *DG_SUBJECT_CODE
+    --
+    DG_START_DATE
+    DG_END_DATE
+}
+
+INT_DG_USER}|.right.|| INT_DG_SUBJECT 
+INT_DG_USER}|..|{ INT_DG_ROLE
+INT_DG_SUBJECT}o..o| INT_DG_ROLE
+
+@enduml
