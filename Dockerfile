@@ -1,4 +1,5 @@
-# VERSION 2.2.5
+# VERSION 2.4.1
+# LAST_VERSION 2-2-5
 # AUTHOR: Jesse Wei
 # DESCRIPTION: Airflow container with SQLG and MSSQL
 # BUILD: docker build --rm -t saastoolset/sqlg-airflow .
@@ -7,7 +8,7 @@
 
 
 
-FROM python:3.9.6-bullseye
+FROM python:3.9.14-bullseye
 #FROM python:3.9-slim-bullseye
 LABEL maintainer="Jesse_"
 LABEL maintainer="saastoolset"
@@ -17,7 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=2.2.5
+ARG AIRFLOW_VERSION=2.4.1
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
 ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
@@ -84,9 +85,12 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
+##	from version 2.8 forward, psycopg2 no longer bundles binary packages
+    && pip install psycopg2-binary	 \
 #    && pip install cx_Oracle \	
 	&& pip install pyodbc \
-    && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+#    && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+    && pip install apache-airflow[crypto,celery,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install redis \
 #    && pip install MarkupSafe \	
     && pip install 'apache-airflow-providers-microsoft-mssql' \
